@@ -5,13 +5,24 @@ require 'json'
 describe "ResourcesApiClient" do
   before :all do
     ResourcesApiClient::Swagger.configure do |configuration|
-      configuration.key = "<API KEY HERE>"
+      configuration.host = "﻿https://platform.systran.net:8904"
+      if (File.exists?(("./key.txt")))
+      key = File.read("./key.txt", :encoding => 'UTF-8')
+        if (key.length > 0)
+          configuration.key = key
+        else
+          puts "The key.txt file is empty"
+        end
+      else
+        puts"The key.txt file doesn't exists"
+      end
+
     end
 
   end
   describe "Configuration" do
     it "assures the user has a correct client configuration" do
-      expect(ResourcesApiClient::Swagger.configuration.key.length).to eq(36)
+      expect(ResourcesApiClient::Swagger.configuration.key.length).to be_between(10, 100)
     end
   end
 
@@ -72,23 +83,27 @@ describe "ResourcesApiClient" do
       to_list = request.dictionaries.find {|s| s.name == "testRubyClient" }
       entries_list = ResourcesApiClient::DictionaryApi.resources_dictionary_entry_list_post(to_list.id)
       entry_remove_body = '{ "entry": { "sourceId": "'+entries_list.entries[0].source_id+'", "targetId": "'+entries_list.entries[0].target_id+'", "sourceVid": 0, "targetVid": 0} }'
-      begin
       result = ResourcesApiClient::DictionaryApi.resources_dictionary_entry_remove_post(to_list.id, JSON.parse(entry_remove_body))
-      rescue Exception => e
-        puts e.message
-      end
-      expect(result).to be_nil
+      expect(result).not_to be_nil
     end
     it "Imports entries from a file to an already created dictionary." do
       request = ResourcesApiClient::DictionaryApi.resources_dictionary_list_post
       import_target = request.dictionaries.find {|s| s.name == "testRubyClient" }
+      begin
       result = ResourcesApiClient::DictionaryApi.resources_dictionary_entry_import_post(import_target.id, "en", {:inputFile => File.open("./spec/entries.txt","r")})
-      expect(result.total).not_to be_nil
+      rescue Exception => e
+      puts e.message
+      end
+      expect(result).to be_nil
     end
     it "Removes an existing dictionary." do
       request = ResourcesApiClient::DictionaryApi.resources_dictionary_list_post
       to_be_deleted = request.dictionaries.find {|s| s.name == "testRubyClient" }
+      begin
       result = ResourcesApiClient::DictionaryApi.resources_dictionary_remove_post(to_be_deleted.id)
+      rescue Exception => e
+      puts e.message
+      end
       expect(result).to be_nil
     end
 
