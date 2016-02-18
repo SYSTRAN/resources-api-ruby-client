@@ -196,7 +196,7 @@ module ResourcesApiClient
       
 
       # resource path
-      path = "/resources/dictionary/entry/remove".sub('{format}','json')
+      path = "/resources/dictionary/entry/delete".sub('{format}','json')
 
       # query parameters
       query_params = {}
