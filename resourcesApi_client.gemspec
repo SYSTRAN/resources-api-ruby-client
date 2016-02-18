@@ -4,7 +4,7 @@ require "resourcesApi_client/swagger/version"
 
 Gem::Specification.new do |s|
   s.name        = "resourcesApiClient"
-  s.version     = ResourcesApiClient::Swagger::VERSION
+  s.version     = '1.0.2'
   s.platform    = Gem::Platform::RUBY
   s.authors     = ["Systran"]
   s.email       = "support-professional@systransoft.com"
