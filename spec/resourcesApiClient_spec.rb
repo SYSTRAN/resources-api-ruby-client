@@ -11,10 +11,10 @@ describe "ResourcesApiClient" do
         if (key.length > 0)
           configuration.key = key
         else
-          puts "The key.txt file is empty"
+          raise "The apiKey.txt file is empty"
         end
       else
-        puts"The key.txt file doesn't exists"
+        raise "The apiKey.txt file doesn't exists"
       end
 
     end
@@ -37,7 +37,7 @@ describe "ResourcesApiClient" do
       expect(result.language_pairs).not_to be_empty
     end
     it "Adds a new dictionary." do
-      input = '{ "dictionary":{ "sourceLang":"en", "name":"testRubyClient", "targetLangs":"fr", "comments":"This dictionary has been created for ruby client testing purposes", "type":""} }'
+      input = '{ "dictionary":{ "sourceLang":"en", "name":"testRubyClient", "targetLangs":"fr", "comments":"This dictionary has been created for ruby client testing purposes", "type":"UD"} }'
       result = ResourcesApiClient::DictionaryApi.resources_dictionary_add_post(JSON.parse(input))
       expect(result.added).not_to be_nil
     end
